@@ -273,10 +273,16 @@ const app = new Vue({
         },
         removeMovie(e)
         {
+            this.numAdult -= this.adultTicket[e];
+            this.numChild -= this.childTicket[e];
+            this.calculateTotal();
             this.moviesToPurchase.splice(e, 1);
             this.childTicket.splice(e, 1);
             this.adultTicket.splice(e, 1);
             this.ticketSub.splice(e, 1);
+
+            console.log(this.totals.total);
+            console.log(this.moviesToPurchase)
         },
         calculateSub(type)
         {
