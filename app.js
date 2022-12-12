@@ -116,7 +116,7 @@ Vue.component('checkout', { //the component that is used to display the table us
             </tr>
         </thead>
         <tbody>
-            <tr is="tablerow" @removemovie="removeMovie($event)" @removechild="removeChild($event)" @removeadult="removeAdult($event)" v-for="(movie, index) in movies" :movie="movie" :adult="adult[index]" :child="child[index]" :index="index" :sub="sub[index]"></tr>
+            <tr is="tablerow" @removemovie="removeMovie($event)" @removechild="removeChild($event)" @removeadult="removeAdult($event)" v-for="(movie, index) in movies" :movie="movie" :adult="adult[index]" :child="child[index]" :index="index" :sub="sub[index]" :key="index"></tr>
         </tbody>
         <tfoot>
             <tr class=""><td></td></tr>
