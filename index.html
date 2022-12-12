@@ -19,7 +19,7 @@
                             {{numAdult + numChild}}
                         </span>
                     </a>
-                    <h1 class="display-3 text-center mt-3">Cooper's Aftermarket Movies</h1>
+                    <h1 class="display-3 text-center mt-3">Cooper's Blackmarket Movies</h1>
                 </div>
                 <div class="row mt-5">
                     <movie class="card-group" @check="checkOut" @child="childPurchase($event)" @adult="adultPurchase($event)" v-for="(movie, index) in movies" :movieobj="movie" :key="movie.id" :index="index"></movie>

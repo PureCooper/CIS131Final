@@ -1,8 +1,15 @@
-Vue.component('movie', {
+//Name: Cooper Brown
+//Date: 12/8/2022
+//Class: CIS-131
+
+//Word wrap recommended!
+
+//#region ***Components***
+Vue.component('movie', { //component used to generate each movie card
     template: `
     <div class="col-3 text-center mt-3">
-        <div class="card mt-5 border border-2 rounded-2 border-dark" style="width: 100%;">
-            <img :src="'https://image.tmdb.org/t/p/original/' + movieobj.poster_path"  class="card-img-top" alt="...">
+        <div class="card mt-5 border border-2 rounded-2 border-dark" style="width: 100%;"> 
+            <img :src="'https://image.tmdb.org/t/p/original/' + movieobj.poster_path"  class="card-img-top" alt="..."> 
             <div class="card-body ">
                 <div class="row mt-3 mb-5 font-monospace">
                     <div class="col">
@@ -19,36 +26,38 @@ Vue.component('movie', {
                 <button @click='checkout' class="font-monospace btn btn-sm btn-dark btn-outline-light" type="submit">Check out</button>
             </div>
         </div>
-    </div>`,
-    props: ["movieobj", "index", "nummovies"],
-    methods: {
-        childpurchase()
-        {
-            this.$emit('child', this.index)
+    </div>
+    `,
+    props: ["movieobj", "index"], //takes in the movieobj supplied from the v-for in order to display that information to the user
+    methods: {      //also takes the index of this specific movie component in order to send that up to our vue instance for use in functions
+        childpurchase() //function that is used to send an emitter containing the index that is designated 'child' for distinction within the vue instance
+        {               //this is so we can have two different functions for child tickets and adult.
+            this.$emit('child', this.index);
         },
-        adultpurchase()
+        adultpurchase() //function that is used to send an emitter containing the index that is designated 'adult' for distinction within the vue instance
         {
             this.$emit('adult', this.index);
         },
-        checkout()
+        checkout() //function that sends out an emitter that calls a function which increases a variable 'checkOut' by 1, allowing our shopping cart to display
         {
-            this.$emit('check')
+            this.$emit('check');
         }
     }
 })
 
-Vue.component('badge', {
+Vue.component('badge', { //component that is used to generate the buttons that delete tickets from both the child and adult arrays
     template: `
-        <button @click="removeTicket" class=" btn btn-sm btn-dark btn-outline-light" type="submit">Remove Ticket</button>`,
-    props: ["index"],
+        <button @click="removeTicket" class=" btn btn-sm btn-dark btn-outline-light" type="submit">Remove Ticket</button>
+        `,
+    props: ["index"], //takes the index in order to know which movie we are removing a ticket for
     methods: {
         removeTicket(){
-            this.$emit('remove', this.index);
+            this.$emit('remove', this.index); //sends an emitter with the index of the movie we are removing to the parent component <tablerow>
         }
     }
 })
 
-Vue.component('tablerow', {
+Vue.component('tablerow', { //component responsible for displaying each row of our chopping cart table
     template: `
     <tr>
         <th scope="row" style="width: 25%">{{movie.title}}</th>
@@ -58,7 +67,7 @@ Vue.component('tablerow', {
                     {{adult}} x $6.99
                 </div>
                 <div class="col-6">
-                    <badge :index="index" @remove="removeAdult($event)"></badge>                                        </a>
+                    <badge :index="index" @remove="removeAdult($event)"></badge>
                 </div>
                 <div class="col-2"></div>
             </div>
@@ -76,22 +85,23 @@ Vue.component('tablerow', {
         </td>
         <td style="width: 10%">&#36;{{sub}}</td>
         <td style="width: 15%"><button @click="removeMovie" class="btn btn-lg btn-dark btn-outline-light" type="submit">Remove Movie</button></td>
-    </tr>`,
-    props: ["movie", "adult", "child", "index", "sub"],
-    methods: {
-        removeAdult(e){
+    </tr>
+    `,
+    props: ["movie", "adult", "child", "index", "sub"], //takes in the movie that is generated from our v-for, as well as the amount of tickets for adult
+    methods: {//and child in order to display that to the user. Additionally it takes in the index in order to remove a movie as well as pass it to the badge component      
+        removeAdult(e){//and finally it takes in the array that holds the subtotals for each of the movies that are being displayed in our shopping cart
             this.$emit('removeadult', e)
-        },
-        removeChild(e){
-            this.$emit('removechild', e)
-        },
+        }, //the remove adult function which sends an emitter to the parent component <checkout> containing the index that was
+        removeChild(e){ //sent up from  <badge> component in order to remove an adult ticket
+            this.$emit('removechild', e)//the remove child function which sends an emitter to the parent component <checkout> containing the index that was
+        },                             //sent up from  <badge> component in order to remove a child ticket
         removeMovie(){
-            this.$emit('removemovie', this.index)
+            this.$emit('removemovie', this.index) //the remove movie function sends an emitter containing the index of this tablerow's movie in order to remove it from the main array
         }
     }
 })
 
-Vue.component('checkout', {
+Vue.component('checkout', { //the component that is used to display the table used for the shopping cart
     template: `
     <table v-show = "checkout > 0" class="table">
         <thead class="table-dark">
@@ -139,11 +149,12 @@ Vue.component('checkout', {
                 </td>
             </tr>
         </tfoot>
-    </table>`,
-    props: ['movies', 'checkout', 'adult', 'child', 'sub', 'totals'],
-    methods: {
-        removeAdult(e){
-            this.$emit('removeadult', e)
+    </table>
+    `,
+    props: ['movies', 'checkout', 'adult', 'child', 'sub', 'totals'], //this component takes in the master array of movies that the user wishes to buy, along with that,
+    methods: {//it contains the checkout variable in order to use v-show to display it when the user has selected a movie
+        removeAdult(e){//additionally the adult and child ticket arrays are sent in to further send down into the child components
+            this.$emit('removeadult', e)//lastly, the subtotals/total are sent down to display within the table footer
         },
         removeChild(e){
             this.$emit('removechild', e)
@@ -153,6 +164,8 @@ Vue.component('checkout', {
         }
     }
 })
+//#endregion
+
 
 const app = new Vue({
     el: "#app",
@@ -195,10 +208,12 @@ const app = new Vue({
         },
         checkOut()
         {
-
-            this.checkout = 0;
-            this.checkout = 1;
-            setTimeout(this.scroll, 25);
+            if(this.moviesToPurchase.length > 0)
+            {
+                this.checkout = 0;
+                this.checkout = 1;
+                setTimeout(this.scroll, 25);
+            }
         },
         scroll()
         {
@@ -237,7 +252,7 @@ const app = new Vue({
         {
             this.adultTicket[e] -= 1;
             this.numAdult -= 1;
-            this.calculateSub()
+            this.calculateSub();
             this.calculateTotal();
             if(this.adultTicket[e] <= 0)
             {
@@ -248,6 +263,11 @@ const app = new Vue({
                     this.childTicket.splice(e, 1);
                     this.adultTicket.splice(e, 1);
                     this.ticketSub.splice(e, 1);
+                    
+                    if(this.moviesToPurchase.length == 0)
+                    {
+                        this.checkout = 0;
+                    }
                 }
             }
             this.keyForRerender += 1;
@@ -267,6 +287,11 @@ const app = new Vue({
                     this.adultTicket.splice(e, 1);
                     this.childTicket.splice(e, 1);
                     this.ticketSub.splice(e, 1);
+
+                    if(this.moviesToPurchase.length == 0)
+                    {
+                        this.checkout = 0;
+                    }
                 }
             }
             this.keyForRerender += 1;
@@ -281,8 +306,10 @@ const app = new Vue({
             this.adultTicket.splice(e, 1);
             this.ticketSub.splice(e, 1);
 
-            console.log(this.totals.total);
-            console.log(this.moviesToPurchase)
+            if(this.moviesToPurchase.length == 0)
+            {
+                this.checkout = 0;
+            }
         },
         calculateSub(type)
         {
