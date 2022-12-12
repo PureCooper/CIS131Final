@@ -4,7 +4,6 @@
 
 //Word wrap recommended!
 
-//#region ***Components***
 Vue.component('movie', { //component used to generate each movie card
     template: `
     <div class="col-3 text-center mt-3">
@@ -96,8 +95,8 @@ Vue.component('tablerow', { //component responsible for displaying each row of o
             this.$emit('removechild', e)//the remove child function which sends an emitter to the parent component <checkout> containing the index that was
         },                             //sent up from  <badge> component in order to remove a child ticket
         removeMovie(){
-            this.$emit('removemovie', this.index) //the remove movie function sends an emitter containing the index of this tablerow's movie in order to remove it from the main array
-        }
+            this.$emit('removemovie', this.index) //the remove movie function sends an emitter containing the index of this tablerow's movie to the parent component
+        } //in order to remove it from the main array
     }
 })
 
@@ -156,37 +155,35 @@ Vue.component('checkout', { //the component that is used to display the table us
         removeAdult(e){//additionally the adult and child ticket arrays are sent in to further send down into the child components
             this.$emit('removeadult', e)//lastly, the subtotals/total are sent down to display within the table footer
         },
-        removeChild(e){
-            this.$emit('removechild', e)
-        },
-        removeMovie(e){
-            this.$emit('removemovie', e)
+        removeChild(e){ //the indexs for both the child and adult tickets are still being sent up the ladder of components but this is the last stop 
+            this.$emit('removechild', e) //before the DOM, the next distination for 'e' or 'index' will be vue instance where we can use it in functions
+        }, 
+        removeMovie(e){ //just like the adult and child emitters, this will be the last stop for the index of the movie that the user wishes to remove 
+            this.$emit('removemovie', e) //all of these index's have been sent up the nested components
         }
     }
 })
-//#endregion
 
-
-const app = new Vue({
-    el: "#app",
+const app = new Vue({ //Declaration of the vue instance 
+    el: "#app", 
     data: {
-        url: "https://api.themoviedb.org/3/movie/now_playing?api_key=b7c82d15e3cce1e75e9457dd5478dfc2&language=en-US&page=1",
-        numMovies: 4,
-        checkout: 0,
-        movies: [],
-        moviesToPurchase: [],
-        childTicket: [],
-        adultTicket: [],
-        ticketSub: [],
-        numAdult: 0,
-        numChild: 0,
-        totals: {
-            totalAdult: 0,
-            totalChild: 0,
-            total: 0
+        url: "https://api.themoviedb.org/3/movie/now_playing?api_key=b7c82d15e3cce1e75e9457dd5478dfc2&language=en-US&page=1", //the url that is used to make the api call
+        numMovies: 4, //number of movies that will be loaded onto the page at render, directly tied to the viewing more movies function 
+        checkout: 0, //the variable responsible for if the shopping cart displays, this is done using v-show
+        movies: [], //the original movie object array that holds 20 movies pumped from our api call
+        moviesToPurchase: [], //the array that holds the movie objects that our user is purchasing. It is filtered for duplicates
+        adultTicket: [], //another parallel array that is identical to the previous array other than that it holds the numbers for adult tickets
+        childTicket: [], //parallel array to our moviesToPurchase array that holds the amount of child tickets for each index corresponding to a movie 
+        ticketSub: [], //yet another parallel array that holds the subtotal amounts for each movie corresponding to the index in the master 'moviesToPurchase' array
+        numAdult: 0, //the total number of adult tickets for the order
+        numChild: 0, //the total number of child tickets 
+        totals: { //an object containing all of the information we will send into our table footer
+            totalAdult: 0, //the total price for all of the adult tickets
+            totalChild: 0, //the total price for the child tickets
+            total: 0 //the total price
         },
-        keyForRerender: 0
-    },
+        keyForRerender: 0 //variable that gets assigned as a key in several locations, the reason for this is to force a rerender of whatever component this key is tied to
+    },            //i was having trouble having certain information display as soon as it was changed and so i found this solution on github
     methods: {
         childPurchase(e)
         {
